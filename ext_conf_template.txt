@@ -1,0 +1,17 @@
+	# cat=basic/enable; type=boolean; label=LLL:EXT:pngquant/Resources/Private/Language/locallang_be.xlf:extmng.keepOriginal
+keepOriginal = 1
+
+	# cat=basic/enable; type=string; label=LLL:EXT:pngquant/Resources/Private/Language/locallang_be.xlf:extmng.executable
+executable = /usr/bin/pngquant
+
+	# cat=basic/enable; type=boolean; label=LLL:EXT:pngquant/Resources/Private/Language/locallang_be.xlf:extmng.nofs
+nofs = 0
+
+	# cat=basic/enable; type=options[0=zero,1=un,2=deux,3,4,5,6,7,8,9,10,11=slow]; label=LLL:EXT:pngquant/Resources/Private/Language/locallang_be.xlf:extmng.speed
+speed = 3
+
+	# cat=basic/enable; type=string; label=LLL:EXT:pngquant/Resources/Private/Language/locallang_be.xlf:extmng.quality
+quality =
+
+	# cat=basic/enable; type=boolean; label=LLL:EXT:pngquant/Resources/Private/Language/locallang_be.xlf:extmng.iebug
+iebug = 0

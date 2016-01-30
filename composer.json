@@ -1,0 +1,19 @@
+
+{
+  "name": "morinfa/pngquant",
+  "type": "typo3-cms-extension",
+  "description": "Integration of pngquant library (lossy compression of PNG images - https://pngquant.org/).",
+  "homepage": "https://github.com/morinfa/pngquant",
+  "license": ["GPL-2.0+"],
+  "keywords": [
+    "TYPO3 CMS",
+    "pngquant",
+    "png",
+    "lossy",
+    "compression"
+  ],
+  "support": {
+    "issues": "https://github.com/morinfa/pngquant/issues"
+  },
+  "version": "1.0.0-dev"
+}

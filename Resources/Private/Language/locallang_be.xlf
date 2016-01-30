@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<xliff version="1.0">
+	<file source-language="en" datatype="plaintext" original="messages" date="2016-01-26T16:58:14Z" product-name="pngquant">
+		<header/>
+		<body>
+			<trans-unit id="extmng.keepOriginal" xml:space="preserve">
+				<source>Keep original images:If set, uploaded images will never be overwritten by pngquant (i.e. only processed images will be converted)</source>
+			</trans-unit>
+			<trans-unit id="extmng.executable" xml:space="preserve">
+				<source>Executable for pngquant:Full path for pngquant command</source>
+			</trans-unit>
+			<trans-unit id="extmng.nofs" xml:space="preserve">
+				<source>Disable Floyd-Steinberg dithering</source>
+			</trans-unit>
+			<trans-unit id="extmng.speed" xml:space="preserve">
+				<source>Speed/quality trade-off:1=slow, 3=default, 11=fast &amp; rough</source>
+			</trans-unit>
+			<trans-unit id="extmng.quality" xml:space="preserve">
+				<source>Quality:Don't save below min, use less colors below max (0-100)</source>
+			</trans-unit>
+			<trans-unit id="extmng.iebug" xml:space="preserve">
+				<source>Workaround for IE6:IE6 only displays fully opaque pixels. pngquant will make almost-opaque pixels fully opaque and will avoid creating new transparent colors.</source>
+			</trans-unit>
+		</body>
+	</file>
+</xliff>
