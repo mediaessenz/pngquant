@@ -15,10 +15,5 @@
   "support": {
     "issues": "https://github.com/morinfa/pngquant/issues"
   },
-  "autoload": {
-    "psr-4": {
-      "SwordGroup\\Pngquant\\": "Classes"
-    }
-  },
-  "version": "1.0.2"
+  "version": "1.0.3"
 }

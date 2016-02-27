@@ -70,7 +70,7 @@ class FileUploadHook implements ExtendedFileUtilityProcessDataHookInterface, Sin
 			if(is_array($files)) {
 				foreach($files as $file) {
 					/** @var $file File */
-					$this->pngquantService->convertImage($file);
+					$this->pngquantService->convertPngImage($file);
 				}
 			}
 		}
