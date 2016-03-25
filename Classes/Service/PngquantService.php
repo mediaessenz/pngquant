@@ -31,7 +31,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Resource\ProcessedFile;
 use TYPO3\CMS\Core\Resource\AbstractFile;
 use TYPO3\CMS\Core\Utility\CommandUtility;
-use TYPO3\CMS\Core\Resource\File;
 
 /**
  * Pngquant service.
@@ -47,10 +46,9 @@ class PngquantService implements SingletonInterface {
 	const EXTENSION_PNG = 'png';
 
 	/**
-	 * Pngquant command line template.
 	 * @var string
 	 */
-	const COMMAND = '@EXECUTABLE@ @NOFS@ @OUTPUT@ @SPEED@ @QUALITY@ @IEBUG@ @INPUT@ --force';
+	const COMMAND = '@EXECUTABLE@ @NOFS@ @OUTPUT@ @SPEED@ @QUALITY@ @IEBUG@ @INPUT@';
 
 	/**
 	 * @var \TYPO3\CMS\Core\Log\Logger
@@ -58,7 +56,6 @@ class PngquantService implements SingletonInterface {
 	protected $logger = NULL;
 
 	/**
-	 * Extension configuration.
 	 * @var array
 	 */
 	protected $confArray = array();
@@ -69,7 +66,7 @@ class PngquantService implements SingletonInterface {
 	protected $storageRepository = NULL;
 
 	/**
-	 * Initializes logger and retrieve extension configuration.
+	 *
 	 */
 	public function __construct() {
 		$this->logger = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Log\LogManager::class)->getLogger(__CLASS__);
@@ -77,7 +74,7 @@ class PngquantService implements SingletonInterface {
 	}
 
 	/**
-	 * Convert all PNG images (except processed) from specified storage.
+	 * Convert all images in specified storage.
 	 *
 	 * @param int $storageUid
 	 * @return boolean
@@ -86,16 +83,11 @@ class PngquantService implements SingletonInterface {
 		$this->storageRepository = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Resource\StorageRepository::class);
 		$storage = $this->storageRepository->findByUid($storageUid);
 		if($storage) {
-			// Convert all storage files
 			$files = $storage->getFilesInFolder($storage->getRootLevelFolder(FALSE), 0, 0, TRUE, TRUE);
 			foreach($files as $file) {
-				if($file instanceof File) {
-					$this->convertPngImage($file);
-				}
-				unset($file);
+				$this->convertPngImage($file);
 			}
 		} else {
-			$this->logger->error('No storage found', array('storage' => $storageUid));
 			return FALSE;
 		}
 	}
@@ -106,62 +98,35 @@ class PngquantService implements SingletonInterface {
 	 * @param AbstractFile $file
 	 */
 	public function convertPngImage(AbstractFile $file) {
-		try {
-			if(self::EXTENSION_PNG !== $file->getExtension()) {
-				return;
-			}
-
-			// Ignore processed file which uses original file
-			if($file instanceof ProcessedFile && $file->usesOriginalFile()) {
-				$this->logger->debug('Do not convert processed file identical with its original file', array('file' => $inputFilePath));
-				return;
-			}
-
-			// Set input/output files for pngquant command
-			// Input file is the the specified file we want to quantize
-			// Output file is a temporary file in typo3temp directory
-			$inputFilePath = PATH_site . $file->getPublicUrl();
-			$outputFilePath = GeneralUtility::tempnam('sg_pngquant_', '.' . self::EXTENSION_PNG);
-
-			// Build command line
-			$cmd = $this->buildCommand($inputFilePath, $outputFilePath);
-
-			$result = CommandUtility::exec($cmd, $output, $returnValue);
-			if(0 === $returnValue) {
-				// Replace content
-				if($file instanceof ProcessedFile) {
-					// For processed file, only convert real processed file (i.e. different than their original file)
-					// Temporary file is automatically removed when updating a processed file
-					$this->logger->debug('Update processed file', array('cmd' => $cmd));
-					$file->updateWithLocalFile($outputFilePath);
-				} elseif(! $this->confArray['keepOriginal']) {
-					// Convert original files according to extension configuration
-					// After conversion the temporary file is removed
-					$this->logger->debug('Update original file', array('cmd' => $cmd));
-					$contents = @file_get_contents($outputFilePath);
-					$file->setContents($contents);
-				}
-			} else {
-				$this->logger->error('Convert image', array('cmd' => $cmd, 'result' => $result, 'output' => $output, 'returnValue' => $returnValue));
-			}
-		} catch(\RuntimeException $e) {
-			$this->logger->error($e->getMessage());
+		if(self::EXTENSION_PNG !== $file->getExtension()) {
+			return;
 		}
 
-		// Remove temporary file, if exists
-		if(file_exists($outputFilePath)) {
-			$this->removeTemporaryFile($outputFilePath);
-		}
-	}
+		// Set input/output files
+		$inputFilePath = PATH_site . $file->getPublicUrl();
+		$outputFilePath = GeneralUtility::tempnam('sg_pngquant_' . md5($inputFilePath)) . self::EXTENSION_PNG;
 
-	/**
-	 * Remove temporary file.
-	 *
-	 * @param string $filePath
-	 */
-	protected function removeTemporaryFile($filePath) {
-		if(!GeneralUtility::unlink_tempfile($filePath)) {
-			$this->logger->error('Failed to remove file', array('filepath' => $filePath));
+		// Build command
+		$cmd = $this->buildCommand($inputFilePath, $outputFilePath);
+
+		// Exec command
+		$result = CommandUtility::exec($cmd, $output, $returnValue);
+		if(0 === $returnValue) {
+			// Replace content
+			if($file instanceof ProcessedFile) {
+				$file->updateWithLocalFile($outputFilePath);
+			} elseif(! $this->confArray['keepOriginal']) {
+				// Do not replace original files according to extension configuration
+				$contents = @file_get_contents($outputFilePath);
+				$file->setContents($contents);
+			}
+		} else {
+			$this->logger->error('Convert image', array('cmd' => $cmd, 'result' => $result, 'output' => $output, 'returnValue' => $returnValue));
+		}
+
+		// Remove temporary file
+		if(GeneralUtility::unlink_tempfile($outputFilePath)) {
+			$this->logger->error('Failed to remove file', array('filepath' => $outputFilePath));
 		}
 	}
 
