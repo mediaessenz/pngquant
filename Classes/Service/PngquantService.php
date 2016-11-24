@@ -121,7 +121,7 @@ class PngquantService implements SingletonInterface {
 			// Set input/output files for pngquant command
 			// Input file is the the specified file we want to quantize
 			// Output file is a temporary file in typo3temp directory
-			$inputFilePath = PATH_site . $file->getPublicUrl();
+			$inputFilePath = $file->getForLocalProcessing();
 			$outputFilePath = GeneralUtility::tempnam('sg_pngquant_', '.' . self::EXTENSION_PNG);
 
 			// Build command line
