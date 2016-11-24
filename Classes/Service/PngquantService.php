@@ -87,6 +87,7 @@ class PngquantService implements SingletonInterface {
 		$storage = $this->storageRepository->findByUid($storageUid);
 		if($storage) {
 			// Convert all storage files
+			$storage->setEvaluatePermissions(false);
 			$files = $storage->getFilesInFolder($storage->getRootLevelFolder(FALSE), 0, 0, TRUE, TRUE);
 			foreach($files as $file) {
 				if($file instanceof File) {
