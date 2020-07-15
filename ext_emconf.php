@@ -12,7 +12,7 @@ $EM_CONF[$_EXTKEY] = array(
 	'title' => 'pngquant',
 	'description' => 'Integration of pngquant library (lossy compression of PNG images - https://pngquant.org/).',
 	'category' => 'backend',
-	'version' => '1.0.4',
+	'version' => '1.1.4',
 	'author' => 'Fabrice MORIN',
 	'author_email' => 'fmo@sword.eu',
 	'author_company' => 'Sword-Group',
@@ -22,7 +22,7 @@ $EM_CONF[$_EXTKEY] = array(
 	'clearCacheOnLoad' => 1,
 	'constraints' => array(
 		'depends' => array(
-			'typo3' => '6.2.0-9.5.99',
+			'typo3' => '9.5.19-',
 		),
 		'conflicts' => array(
 		),
